@@ -8,11 +8,21 @@
 <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600" rel="stylesheet">
 
 <style>
+/* IMPORTANT: make sure background.png exists in the SAME folder as this HTML file */
+html, body{
+  height:100%;
+}
+
 body{
   margin:0;
   min-height:100vh;
-  background:#fff;
   font-family:"Open Sans", Arial, sans-serif;
+
+  background-color:#ffffff;                 /* fallback */
+  background-image:url("./background.png"); /* adjust path if needed */
+  background-repeat:no-repeat;
+  background-position:center center;
+  background-size:cover;
 }
 
 /* === CHAT OVERLAY === */
@@ -40,7 +50,7 @@ body{
   border:0;
 }
 
-/* === LAUNCHER BUTTON (MATCH MAPFRE) === */
+/* === LAUNCHER BUTTON === */
 .chat-launcher{
   display:flex;
   align-items:center;
@@ -95,7 +105,7 @@ body{
     </iframe>
   </div>
 
-  <button class="chat-launcher" id="chatLauncher">
+  <button class="chat-launcher" id="chatLauncher" type="button">
     <span>Chat with us</span>
     <span class="chat-icon">💬</span>
   </button>
@@ -109,7 +119,7 @@ const launcher = document.getElementById("chatLauncher");
 launcher.onclick = () => {
   const closed = overlay.classList.contains("chat-closed");
   overlay.classList.toggle("chat-closed", !closed);
-  localStorage.setItem("chatOpen", closed);
+  localStorage.setItem("chatOpen", String(closed));
 };
 
 if (localStorage.getItem("chatOpen") === "true") {
