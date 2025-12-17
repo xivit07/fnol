@@ -1,140 +1,185 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Amelia Chat Overlay</title>
 
 <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600" rel="stylesheet">
 
 <style>
-/* ===== FULL IMAGE BACKGROUND (NO CROP) ===== */
-html, body { height: 100%; }
-
-body{
-  margin:0;
-  font-family:"Open Sans", Arial, sans-serif;
-
-  background-color:#ffffff;                 /* fills empty space */
-  background-image:url("./background.png"); /* adjust path if needed */
-  background-repeat:no-repeat;
-  background-position:center center;
-  background-size:contain;                  /* FULL image visible */
-}
-
-/* ===== CHAT OVERLAY ===== */
-.chat-overlay{
-  position:fixed;
-  right:16px;
-  bottom:16px;
-  z-index:9999;
-}
-
-/* ===== BIGGER CHAT WINDOW ===== */
-.chat-window{
-  width:460px;       /* bigger */
-  height:660px;      /* bigger */
-  margin-bottom:10px;
-
-  background:#fff;
-  border-radius:12px;
-  overflow:hidden;
-  box-shadow:0 14px 40px rgba(0,0,0,.3);
-
-  transform: translateY(12px);
-  opacity: 0;
-  transition: transform .25s ease, opacity .25s ease;
-}
-
-#receiver{
-  width:100%;
-  height:100%;
-  border:0;
-}
-
-/* open state animation */
-.chat-open .chat-window{
-  transform: translateY(0);
-  opacity: 1;
-}
-
-/* ===== LAUNCHER BUTTON ===== */
-.chat-launcher{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  height:40px;
-  padding:0 14px;
-  background:#b5121b;
-  color:#fff;
-  border:none;
-  border-radius:4px;
-  cursor:pointer;
-  font-size:15px;
-  font-weight:600;
-  box-shadow:0 8px 20px rgba(0,0,0,.25);
-}
-
-.chat-icon{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  width:24px;
-  height:24px;
-  border:1px solid rgba(255,255,255,.5);
-  border-radius:3px;
-  font-size:14px;
-}
-
-/* closed state hides window */
-.chat-closed .chat-window{ display:none; }
-
-/* ===== MOBILE ===== */
-@media (max-width:768px){
-  .chat-overlay{ right:12px; bottom:12px; }
-  .chat-window{
-    width:calc(100vw - 24px);
-    height:80vh;
+  /* =========================================================
+     DEMO BACKGROUND (REMOVE THIS ENTIRE BLOCK ON REAL WEBSITE)
+     Full image visible (no crop). Adds a soft blurred fill
+     so you don't get ugly white bars.
+     ========================================================= */
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    font-family: "Open Sans", Arial, sans-serif;
+    background: #ffffff;
   }
-}
+
+  /* Comment out both .bg-* divs in HTML if you are embedding in a real site */
+  .bg-blur {
+    position: fixed;
+    inset: 0;
+    background-image: url("./background.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;        /* fills screen */
+    filter: blur(18px);
+    transform: scale(1.05);
+    z-index: -2;
+  }
+  .bg-full {
+    position: fixed;
+    inset: 0;
+    background-image: url("./background.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;      /* FULL image visible (no crop) */
+    z-index: -1;
+  }
+
+  /* =========================================================
+     CHAT OVERLAY (Expected behavior)
+     ========================================================= */
+  .chat-overlay {
+    position: fixed;
+    right: 18px;
+    bottom: 18px;
+    z-index: 999999;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+  }
+
+  /* Chat window (hidden when closed) */
+  .chat-window {
+    width: 420px;                 /* make it bigger here */
+    height: 640px;                /* make it bigger here */
+    background: #fff;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 18px 50px rgba(0,0,0,.28);
+    border: 1px solid rgba(0,0,0,.08);
+
+    transform: translateY(14px);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform .22s ease, opacity .22s ease;
+  }
+
+  .chat-open .chat-window {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  #receiver {
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  /* Launcher button (looks like your screenshot style) */
+  .chat-launcher {
+    height: 38px;
+    padding: 0 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+
+    background: #b5121b;
+    color: #fff;
+    border: 1px solid rgba(255,255,255,.35);
+    border-radius: 4px;
+    cursor: pointer;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    box-shadow: 0 10px 24px rgba(0,0,0,.18);
+    user-select: none;
+  }
+
+  .chat-launcher .icon-box {
+    width: 26px;
+    height: 22px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255,255,255,.45);
+    border-radius: 3px;
+    font-size: 14px;
+    line-height: 1;
+  }
+
+  /* Optional: show "minimize" chevron when open */
+  .chat-launcher .chev { display: none; }
+  .chat-open .chat-launcher .chev { display: inline; }
+  .chat-open .chat-launcher .msg { display: none; }
+
+  /* Mobile behavior */
+  @media (max-width: 768px) {
+    .chat-overlay { right: 12px; bottom: 12px; }
+
+    .chat-window {
+      width: calc(100vw - 24px);
+      height: 78vh;
+      border-radius: 16px;
+    }
+  }
 </style>
 </head>
 
 <body>
 
+<!-- DEMO BACKGROUND (REMOVE these 2 divs on real website) -->
+<div class="bg-blur"></div>
+<div class="bg-full"></div>
+
+<!-- Your page content would be here if this is a standalone demo -->
+
+<!-- CHAT OVERLAY -->
 <div class="chat-overlay chat-closed" id="chatOverlay">
 
   <div class="chat-window">
     <iframe
       id="receiver"
       src="https://showcase.amelia.com/Amelia/ui/fnol/chat?domain=fnol"
-      allow="geolocation; microphone; camera">
+      allow="geolocation; microphone; camera"
+      frameborder="0">
     </iframe>
   </div>
 
-  <button class="chat-launcher" id="chatLauncher" type="button">
-    <span>Chat with us</span>
-    <span class="chat-icon">💬</span>
+  <button class="chat-launcher" id="chatLauncher" type="button" aria-expanded="false">
+    <span class="msg">Chat with us</span>
+    <span class="chev">▾</span>
+    <span class="icon-box">💬</span>
   </button>
 
 </div>
 
 <script>
-const overlay = document.getElementById("chatOverlay");
-const launcher = document.getElementById("chatLauncher");
+  const overlay = document.getElementById("chatOverlay");
+  const launcher = document.getElementById("chatLauncher");
 
-function setOpen(isOpen){
-  overlay.classList.toggle("chat-closed", !isOpen);
-  overlay.classList.toggle("chat-open", isOpen);
-  localStorage.setItem("chatOpen", String(isOpen));
-}
+  function setOpen(isOpen) {
+    overlay.classList.toggle("chat-open", isOpen);
+    launcher.setAttribute("aria-expanded", String(isOpen));
+    localStorage.setItem("chatOpen", String(isOpen));
+  }
 
-launcher.onclick = () => {
-  const isOpen = overlay.classList.contains("chat-closed");
-  setOpen(isOpen);
-};
+  launcher.addEventListener("click", () => {
+    const isOpen = !overlay.classList.contains("chat-open");
+    setOpen(isOpen);
+  });
 
-setOpen(localStorage.getItem("chatOpen") === "true");
+  // restore
+  setOpen(localStorage.getItem("chatOpen") === "true");
 </script>
 
 </body>
