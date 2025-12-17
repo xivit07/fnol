@@ -5,86 +5,78 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Amelia Chat Overlay</title>
 
-<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600" rel="stylesheet">
 
 <style>
 body{
   margin:0;
   min-height:100vh;
-  background-image:url('background.png');
-  background-repeat:no-repeat;
-  background-position:center;
-  background-size:cover;
+  background:#fff;
   font-family:"Open Sans", Arial, sans-serif;
 }
 
-/* ===== Chat Overlay Wrapper ===== */
+/* === CHAT OVERLAY === */
 .chat-overlay{
   position:fixed;
-  right:24px;
-  bottom:24px;
+  right:12px;
+  bottom:12px;
   z-index:9999;
 }
 
-/* ===== Chat Window ===== */
+/* === CHAT WINDOW === */
 .chat-window{
-  width:380px;
-  height:560px;
-  margin-bottom:12px;
+  width:360px;
+  height:520px;
+  margin-bottom:8px;
   background:#fff;
-  border-radius:12px;
+  border-radius:10px;
   overflow:hidden;
-  box-shadow:0 12px 40px rgba(0,0,0,.25);
+  box-shadow:0 10px 30px rgba(0,0,0,.25);
 }
 
-/* iframe full fit */
 #receiver{
   width:100%;
   height:100%;
   border:0;
 }
 
-/* ===== Launcher Button ===== */
+/* === LAUNCHER BUTTON (MATCH MAPFRE) === */
 .chat-launcher{
   display:flex;
   align-items:center;
-  gap:10px;
-  height:44px;
-  padding:0 14px;
-  background:#b10f12; /* MAPFRE red */
+  gap:8px;
+  height:36px;
+  padding:0 12px;
+  background:#b5121b;
   color:#fff;
-  border:1px solid rgba(255,255,255,.35);
+  border:none;
   border-radius:4px;
   cursor:pointer;
-  font-size:16px;
+  font-size:14px;
   font-weight:600;
-  box-shadow:0 10px 24px rgba(0,0,0,.18);
+  box-shadow:0 6px 16px rgba(0,0,0,.2);
 }
 
 .chat-icon{
   display:flex;
   align-items:center;
   justify-content:center;
-  width:26px;
-  height:26px;
-  border:1px solid rgba(255,255,255,.45);
+  width:22px;
+  height:22px;
+  border:1px solid rgba(255,255,255,.5);
   border-radius:3px;
-  font-size:16px;
+  font-size:13px;
 }
 
-/* ===== Closed State ===== */
+/* === CLOSED STATE === */
 .chat-closed .chat-window{
   display:none;
 }
 
-/* ===== Mobile ===== */
+/* === MOBILE === */
 @media (max-width:768px){
-  .chat-overlay{
-    right:16px;
-    bottom:16px;
-  }
   .chat-window{
-    width:calc(100vw - 32px);
+    width:calc(100vw - 24px);
     height:70vh;
   }
 }
@@ -99,12 +91,11 @@ body{
     <iframe
       id="receiver"
       src="https://showcase.amelia.com/Amelia/ui/fnol/chat?domain=fnol"
-      allow="geolocation; microphone; camera"
-      onload="sendConversationAttribute('test0','value0')">
+      allow="geolocation; microphone; camera">
     </iframe>
   </div>
 
-  <button class="chat-launcher" id="chatLauncher" type="button">
+  <button class="chat-launcher" id="chatLauncher">
     <span>Chat with us</span>
     <span class="chat-icon">💬</span>
   </button>
@@ -112,38 +103,18 @@ body{
 </div>
 
 <script>
-function sendConversationAttribute(key, value) {
-  const iframe = document.getElementById("receiver");
-  if (!iframe || !iframe.contentWindow) return;
-
-  iframe.contentWindow.postMessage({
-    actionType: 'ameliaConversationAttributes',
-    actionData: { [key]: value }
-  }, "https://showcase.amelia.com");
-}
-
-/* Toggle logic */
 const overlay = document.getElementById("chatOverlay");
 const launcher = document.getElementById("chatLauncher");
 
-function toggleChat(){
-  const isClosed = overlay.classList.contains("chat-closed");
-  overlay.classList.toggle("chat-closed", !isClosed);
-  localStorage.setItem("chatOverlayOpen", String(isClosed));
-}
+launcher.onclick = () => {
+  const closed = overlay.classList.contains("chat-closed");
+  overlay.classList.toggle("chat-closed", !closed);
+  localStorage.setItem("chatOpen", closed);
+};
 
-launcher.addEventListener("click", toggleChat);
-
-/* Restore state */
-const saved = localStorage.getItem("chatOverlayOpen");
-if (saved === "true") {
+if (localStorage.getItem("chatOpen") === "true") {
   overlay.classList.remove("chat-closed");
 }
-
-/* Safety: listen only to Amelia */
-window.addEventListener("message", function(e){
-  if (e.origin !== "https://showcase.amelia.com") return;
-});
 </script>
 
 </body>
