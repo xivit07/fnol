@@ -12,10 +12,10 @@
 
         .chat-overlay {
             position: fixed;
-             width: 440px;
-            height: 100vh;
-            bottom: 0;
-            right: 0;
+            width: 420px;              /* similar to screenshot */
+            height: calc(100vh - 40px);
+            bottom: 20px;
+            right: 20px;
             z-index: 90;
         }
 
@@ -28,8 +28,8 @@
         }
 
         .chat-overlay-wrapper {
-            width: 440px;
-            height: 100%;
+            width: 420px;
+            height: calc(100vh - 100px); /* leaves space for header */
         }
 
         .chat-overlay-header-mobile {
