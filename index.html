@@ -6,21 +6,21 @@
     <style>
          body {
             background-image: url('background.png');
-            background-size: contain;
+            background-size: cover;
             /* <------ */
         }
 
         .chat-overlay {
             position: fixed;
-            width: 376px;
-            height: 500px;
-            bottom: 24px;
-            right: 24px;
+             width: 420px;              /* similar to screenshot */
+            height: calc(100vh - 40px);
+            bottom: 20px;
+            right: 20px;
             z-index: 90;
         }
 
         .chat-overlay-open {
-            height: 512px;
+             height: calc(100vh - 40px);
         }
 
         .chat-overlay-closed {
@@ -28,8 +28,8 @@
         }
 
         .chat-overlay-wrapper {
-            width: 376px;
-            height: 448px;
+            width: 420px;
+            height: calc(100vh - 100px); /* leaves space for header */
         }
 
         .chat-overlay-header-mobile {
@@ -299,6 +299,7 @@
 </body>
 
 </html>
+
 
 
 
