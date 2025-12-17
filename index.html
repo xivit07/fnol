@@ -1,310 +1,150 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" class="no-js">
-
+<html lang="en">
 <head>
-    <title>Amelia Chat Overlay Example</title>
-    <style>
-         body {
-                margin: 0;
-                min-height: 100vh;
-                background-image: url('background.png');
-                background-repeat: no-repeat;
-                background-position: center center;
-                background-size: cover;      /* fills screen proportionally */
-        }
-        
-        .chat-overlay {
-            position: fixed;
-            width: 420px;        /* was 376px */
-            height: 620px;       /* was 500px */
-            bottom: 24px;
-            right: 24px;
-            z-index: 90;
-        }
-        
-        .chat-overlay-open {
-            height: 640px;
-        }
-        
-        .chat-overlay-wrapper {
-            width: 420px;
-            height: 560px;
-        }
-
-        .chat-overlay-closed {
-            height: 78px;
-        }
-
-
-        .chat-overlay-header-mobile {
-            display: none;
-        }
-
-        .chat-overlay-header {
-            position: relative;
-            height: 56px;
-            width: 56px;
-            margin-left: auto;
-            border-radius: 50%;
-            box-shadow: 1rem 1rem 5rem rgba(0, 0, 0, 0.5);
-        }
-
-        #receiver {
-            transition: opacity 1s ease-in-out;
-            opacity: 1;
-            background: rgba(0, 0, 0, 0.5);
-            box-shadow: 1rem 1rem 5rem rgba(0, 0, 0, 0.5);
-            /* border-radius: 0.5rem; */
-        }
-
-        #receiver.close {
-            height: 0;
-            opacity: 0;
-            overflow: hidden;
-        }
-
-        #receiver.open {
-            height: 100%;
-            opacity: 1;
-            overflow: hidden;
-        }
-
-        .chat-overlay-header-img {
-            position: absolute;
-            max-width: 56px;
-            max-height: 56px;
-            transition: opacity 1s ease-in-out;
-            opacity: 1;
-            right: 0px;
-            left: 0px;
-            top: 0px;
-            bottom: 0px;
-            margin: auto;
-        }
-
-        .chat-overlay-header-img.open {
-            opacity: 0;
-        }
-
-        .absolute-cart-box {
-            display: none;
-        }
-
-        @media only screen and (max-width: 768px) {
-            .chat-overlay {
-                width: 100%;
-                position: fixed;
-                height: 100%;
-            }
-
-            .chat-overlay-header-mobile {
-                display: flex;
-                width: inherit;
-                height: 9%;
-                background: #4d5aff;
-            }
-
-            .chat-overlay-header-mobile img {
-                height: 30%;
-                padding: 1rem;
-                margin-left: auto;
-            }
-
-            .chat-overlay-header-mobile.close {
-                display: none;
-            }
-
-            #receiver {
-                border-radius: 0;
-            }
-
-            #receiver.close {
-                height: 0;
-                opacity: 0;
-                overflow: hidden;
-            }
-
-            #receiver.open {
-                height: 91%;
-                opacity: 1;
-                overflow: hidden;
-            }
-
-            .chat-overlay-open {
-                height: 100%;
-                bottom: 0px;
-                right: 0px;
-            }
-
-            .chat-overlay-closed {
-                height: 70px;
-                bottom: 24px;
-                right: 24px;
-            }
-
-            .chat-overlay-wrapper {
-                width: 100%;
-                height: 100%;
-            }
-        }
-    </style>
-</head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Amelia Chat Overlay</title>
 
-<link href='https://fonts.googleapis.com/css?family=Droid+Sans:400,700|Droid+Serif' rel='stylesheet'>
-<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700" rel="stylesheet">
+
+<style>
+body{
+  margin:0;
+  min-height:100vh;
+  background-image:url('background.png');
+  background-repeat:no-repeat;
+  background-position:center;
+  background-size:cover;
+  font-family:"Open Sans", Arial, sans-serif;
+}
+
+/* ===== Chat Overlay Wrapper ===== */
+.chat-overlay{
+  position:fixed;
+  right:24px;
+  bottom:24px;
+  z-index:9999;
+}
+
+/* ===== Chat Window ===== */
+.chat-window{
+  width:380px;
+  height:560px;
+  margin-bottom:12px;
+  background:#fff;
+  border-radius:12px;
+  overflow:hidden;
+  box-shadow:0 12px 40px rgba(0,0,0,.25);
+}
+
+/* iframe full fit */
+#receiver{
+  width:100%;
+  height:100%;
+  border:0;
+}
+
+/* ===== Launcher Button ===== */
+.chat-launcher{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  height:44px;
+  padding:0 14px;
+  background:#b10f12; /* MAPFRE red */
+  color:#fff;
+  border:1px solid rgba(255,255,255,.35);
+  border-radius:4px;
+  cursor:pointer;
+  font-size:16px;
+  font-weight:600;
+  box-shadow:0 10px 24px rgba(0,0,0,.18);
+}
+
+.chat-icon{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:26px;
+  height:26px;
+  border:1px solid rgba(255,255,255,.45);
+  border-radius:3px;
+  font-size:16px;
+}
+
+/* ===== Closed State ===== */
+.chat-closed .chat-window{
+  display:none;
+}
+
+/* ===== Mobile ===== */
+@media (max-width:768px){
+  .chat-overlay{
+    right:16px;
+    bottom:16px;
+  }
+  .chat-window{
+    width:calc(100vw - 32px);
+    height:70vh;
+  }
+}
+</style>
+</head>
 
 <body>
-    <div class="chat-overlay">
-        <div class="chat-overlay-wrapper">
-            <div class="chat-overlay-header-mobile">
-                <img class="close" src="./image_icon_2.png" alt="toggle chat overlay" />
-            </div>
-            <iframe id="receiver" src="https://showcase.amelia.com/Amelia/ui/fnol/chat?domain=fnol"
-                frameborder="0" width="100%" height="100%" allow="geolocation; microphone; camera" onload="sendConversationAttribute('test0', 'value0')">
-                <p>Your browser does not support iframes.</p>
-            </iframe>
-            <div class="chat-overlay-header">
-                <img class="chat-overlay-header-img close" src="./image_icon_2.png" alt="toggle chat overlay" />
-                <img class="chat-overlay-header-img open" src="./image_icon_2.png" alt="toggle chat overlay" />
-            </div>
-        </div>
-    </div>
 
+<div class="chat-overlay chat-closed" id="chatOverlay">
 
-    <script>
+  <div class="chat-window">
+    <iframe
+      id="receiver"
+      src="https://showcase.amelia.com/Amelia/ui/fnol/chat?domain=fnol"
+      allow="geolocation; microphone; camera"
+      onload="sendConversationAttribute('test0','value0')">
+    </iframe>
+  </div>
 
-        function closeConversation() {
-            console.log("close conversation");
-            sendMessage({actionType: 'endConversation'});
-        }
+  <button class="chat-launcher" id="chatLauncher" type="button">
+    <span>Chat with us</span>
+    <span class="chat-icon">💬</span>
+  </button>
 
-        function resetConversation() {
-            sendMessage({actionType: 'resetConversation'});
-        }
+</div>
 
-        function callBpnWithEchoMessage(bpnName, message) {
-            sendMessage({actionType: 'ameliaBpn', actionName: bpnName, actionData: {message: message}});
-        }
+<script>
+function sendConversationAttribute(key, value) {
+  const iframe = document.getElementById("receiver");
+  if (!iframe || !iframe.contentWindow) return;
 
-        function callBpn(bpnName) {
-            sendMessage({actionType: 'ameliaBpn', actionName: bpnName, actionData: {submission: {shouldEcho: false}}});
-        }
+  iframe.contentWindow.postMessage({
+    actionType: 'ameliaConversationAttributes',
+    actionData: { [key]: value }
+  }, "https://showcase.amelia.com");
+}
 
-        function sendUserUtterance(utterance) {
-            sendMessage({actionType: 'ameliaSay', actionData: utterance});
-        }
+/* Toggle logic */
+const overlay = document.getElementById("chatOverlay");
+const launcher = document.getElementById("chatLauncher");
 
-        function sendConversationAttribute(key, value) {
-            let data = {};
-            data['actionType'] = 'ameliaConversationAttributes';
-            let entry = {}
-            entry[key] = value;
-            data['actionData'] = entry;
-            console.log("Send data: " + JSON.stringify(data));
-            sendMessage(data);
-        }
+function toggleChat(){
+  const isClosed = overlay.classList.contains("chat-closed");
+  overlay.classList.toggle("chat-closed", !isClosed);
+  localStorage.setItem("chatOverlayOpen", String(isClosed));
+}
 
-        function logout() {
-            sendMessage({actionType: 'logout'});
-        }
+launcher.addEventListener("click", toggleChat);
 
-        function receiveMessage(e, data) {
-            /**
-             * Receive message from child frame and update the DOM
-             * @param {Object} data - data used to update the DOM
-             * @returns - no return
-             */
-            // Check to make sure that this message came from the correct domain.
+/* Restore state */
+const saved = localStorage.getItem("chatOverlayOpen");
+if (saved === "true") {
+  overlay.classList.remove("chat-closed");
+}
 
-            var url = e.data.url;
-            console.log("Event received: " + JSON.stringify(e.data));
-            if (e.origin !== 'https://showcase.amelia.com')
-                return;
-
-            if (e.data.action === "checkout" && e.data.additionalData) {
-                window.location.href = "/checkout/?additionalData=" + e.data.additionalData;
-            }
-        }
-
-        function sendMessage(data) {
-            /**
-             * Use data object and postMessage to URL provided (postMessage to child frame)
-             * @param {Object} data - data to be sent to url provided of child frame
-             * @returns - no return
-             */
-
-            var receiverElem = document.getElementById('receiver').contentWindow;
-            console.log("Send data: " + JSON.stringify(data));
-            receiverElem.postMessage(data, "https://showcase.amelia.com/Amelia/ui/fnol/chat?domain=fnol");
-        }
-        window.addEventListener('message', receiveMessage);
-
-        function openChatOverlay(receiverElem, imgElemOpen, imgElemClose) {
-            document.getElementById('receiver').classList.add("open");
-            document.getElementById('receiver').classList.remove("close");
-            document.getElementsByClassName('chat-overlay')[0].classList.add("chat-overlay-open");
-            document.getElementsByClassName('chat-overlay')[0].classList.remove("chat-overlay-closed");
-            document.getElementsByClassName('chat-overlay-header-mobile')[0].classList.remove('close');
-            imgElemClose.style.opacity = 1;
-            imgElemOpen.style.opacity = 0;
-            localStorage.setItem('chatOverlayOpen', true);
-        }
-
-        function closeChatOverlay(receiverElem, imgElemOpen, imgElemClose) {
-            document.getElementById('receiver').classList.add("close");
-            document.getElementById('receiver').classList.remove("open");
-            document.getElementsByClassName('chat-overlay')[0].classList.add("chat-overlay-closed");
-            document.getElementsByClassName('chat-overlay')[0].classList.remove("chat-overlay-open");
-            document.getElementsByClassName('chat-overlay-header-mobile')[0].classList.add('close');
-            imgElemOpen.style.opacity = 1;
-            imgElemClose.style.opacity = 0;
-            localStorage.setItem('chatOverlayOpen', false);
-        }
-
-        function toggleChatOverlay() {
-            /**
-             * Toggles opening and closing of the chatOverlay
-             * @returns - no return
-             */
-            var chatOverlayHeaderImgElemOpen = document.getElementsByClassName('chat-overlay-header-img open')[0];
-            var chatOverlayHeaderImgElemClose = document.getElementsByClassName('chat-overlay-header-img close')[0];
-            var receiverElem = document.getElementById('receiver');
-            if (receiverElem.classList.contains('close')) {
-                openChatOverlay(receiverElem, chatOverlayHeaderImgElemOpen, chatOverlayHeaderImgElemClose);
-            } else {
-                closeChatOverlay(receiverElem, chatOverlayHeaderImgElemOpen, chatOverlayHeaderImgElemClose);
-            }
-        }
-
-        var chatOverlayHeaderElem = document.getElementsByClassName('chat-overlay-header')[0];
-        chatOverlayHeaderElem.addEventListener('click', toggleChatOverlay);
-        var chatOverlayHeaderElemMobile = document.getElementsByClassName('chat-overlay-header-mobile')[0];
-        chatOverlayHeaderElemMobile.addEventListener('click', toggleChatOverlay);
-
-
-        if (typeof (Storage) !== "undefined") {
-            var chatOverlayOpen = localStorage.getItem('chatOverlayOpen');
-            var chatOverlayHeaderImgElemOpen = document.getElementsByClassName('chat-overlay-header-img open')[0];
-            var chatOverlayHeaderImgElemClose = document.getElementsByClassName('chat-overlay-header-img close')[0];
-            var receiverElem = document.getElementById('receiver');
-            if (chatOverlayOpen && localStorage.getItem('chatOverlayOpen') !== "true") {
-                closeChatOverlay(receiverElem, chatOverlayHeaderImgElemOpen, chatOverlayHeaderImgElemClose);
-            } else {
-                openChatOverlay(receiverElem, chatOverlayHeaderImgElemOpen, chatOverlayHeaderImgElemClose);
-            }
-        } else {
-            // Sorry! No Web Storage support..
-            console.log('No localStorage support')
-        }
-    </script>
+/* Safety: listen only to Amelia */
+window.addEventListener("message", function(e){
+  if (e.origin !== "https://showcase.amelia.com") return;
+});
+</script>
 
 </body>
-
 </html>
-
-
-
-
-
