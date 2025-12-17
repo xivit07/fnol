@@ -8,91 +8,93 @@
 <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600" rel="stylesheet">
 
 <style>
-/* ===== PERFECT BACKGROUND ===== */
-html, body {
-  height: 100%;
-}
+/* ===== FULL IMAGE BACKGROUND (NO CROP) ===== */
+html, body { height: 100%; }
 
-body {
-  margin: 0;
-  font-family: "Open Sans", Arial, sans-serif;
+body{
+  margin:0;
+  font-family:"Open Sans", Arial, sans-serif;
 
-  background-color: #ffffff;                  /* fallback */
-  background-image: url("./background.png");  /* adjust path if needed */
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-size: cover;                     /* perfect fit */
+  background-color:#ffffff;                 /* fills empty space */
+  background-image:url("./background.png"); /* adjust path if needed */
+  background-repeat:no-repeat;
+  background-position:center center;
+  background-size:contain;                  /* FULL image visible */
 }
 
 /* ===== CHAT OVERLAY ===== */
-.chat-overlay {
-  position: fixed;
-  right: 16px;
-  bottom: 16px;
-  z-index: 9999;
+.chat-overlay{
+  position:fixed;
+  right:16px;
+  bottom:16px;
+  z-index:9999;
 }
 
 /* ===== BIGGER CHAT WINDOW ===== */
-.chat-window {
-  width: 440px;       /* increased */
-  height: 640px;      /* increased */
-  margin-bottom: 10px;
-  background: #fff;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 14px 40px rgba(0,0,0,.3);
+.chat-window{
+  width:460px;       /* bigger */
+  height:660px;      /* bigger */
+  margin-bottom:10px;
+
+  background:#fff;
+  border-radius:12px;
+  overflow:hidden;
+  box-shadow:0 14px 40px rgba(0,0,0,.3);
+
+  transform: translateY(12px);
+  opacity: 0;
+  transition: transform .25s ease, opacity .25s ease;
 }
 
-/* iframe always fills */
-#receiver {
-  width: 100%;
-  height: 100%;
-  border: 0;
+#receiver{
+  width:100%;
+  height:100%;
+  border:0;
 }
 
-/* ===== CHAT BUTTON ===== */
-.chat-launcher {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  height: 40px;
-  padding: 0 14px;
-  background: #b5121b;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 15px;
-  font-weight: 600;
-  box-shadow: 0 8px 20px rgba(0,0,0,.25);
+/* open state animation */
+.chat-open .chat-window{
+  transform: translateY(0);
+  opacity: 1;
 }
 
-.chat-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-  border: 1px solid rgba(255,255,255,.5);
-  border-radius: 3px;
-  font-size: 14px;
+/* ===== LAUNCHER BUTTON ===== */
+.chat-launcher{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  height:40px;
+  padding:0 14px;
+  background:#b5121b;
+  color:#fff;
+  border:none;
+  border-radius:4px;
+  cursor:pointer;
+  font-size:15px;
+  font-weight:600;
+  box-shadow:0 8px 20px rgba(0,0,0,.25);
 }
 
-/* ===== CLOSED STATE ===== */
-.chat-closed .chat-window {
-  display: none;
+.chat-icon{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:24px;
+  height:24px;
+  border:1px solid rgba(255,255,255,.5);
+  border-radius:3px;
+  font-size:14px;
 }
+
+/* closed state hides window */
+.chat-closed .chat-window{ display:none; }
 
 /* ===== MOBILE ===== */
-@media (max-width: 768px) {
-  .chat-overlay {
-    right: 12px;
-    bottom: 12px;
-  }
-
-  .chat-window {
-    width: calc(100vw - 24px);
-    height: 80vh;   /* big mobile view */
+@media (max-width:768px){
+  .chat-overlay{ right:12px; bottom:12px; }
+  .chat-window{
+    width:calc(100vw - 24px);
+    height:80vh;
   }
 }
 </style>
@@ -121,17 +123,18 @@ body {
 const overlay = document.getElementById("chatOverlay");
 const launcher = document.getElementById("chatLauncher");
 
-/* toggle open / close */
+function setOpen(isOpen){
+  overlay.classList.toggle("chat-closed", !isOpen);
+  overlay.classList.toggle("chat-open", isOpen);
+  localStorage.setItem("chatOpen", String(isOpen));
+}
+
 launcher.onclick = () => {
-  const closed = overlay.classList.contains("chat-closed");
-  overlay.classList.toggle("chat-closed", !closed);
-  localStorage.setItem("chatOpen", String(closed));
+  const isOpen = overlay.classList.contains("chat-closed");
+  setOpen(isOpen);
 };
 
-/* restore state */
-if (localStorage.getItem("chatOpen") === "true") {
-  overlay.classList.remove("chat-closed");
-}
+setOpen(localStorage.getItem("chatOpen") === "true");
 </script>
 
 </body>
