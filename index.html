@@ -5,32 +5,36 @@
     <title>Amelia Chat Overlay Example</title>
     <style>
          body {
-            background-image: url('background.png');
-            background-size: cover;
-            /* <------ */
+                margin: 0;
+                min-height: 100vh;
+                background-image: url('background.png');
+                background-repeat: no-repeat;
+                background-position: center center;
+                background-size: contain;      /* fills screen proportionally */
         }
-
+        
         .chat-overlay {
             position: fixed;
-            width: 376px;
-            height: 500px;
+            width: 420px;        /* was 376px */
+            height: 620px;       /* was 500px */
             bottom: 24px;
             right: 24px;
             z-index: 90;
         }
-
+        
         .chat-overlay-open {
-            height: 512px;
+            height: 640px;
+        }
+        
+        .chat-overlay-wrapper {
+            width: 420px;
+            height: 560px;
         }
 
         .chat-overlay-closed {
             height: 78px;
         }
 
-        .chat-overlay-wrapper {
-            width: 376px;
-            height: 448px;
-        }
 
         .chat-overlay-header-mobile {
             display: none;
@@ -299,6 +303,7 @@
 </body>
 
 </html>
+
 
 
 
